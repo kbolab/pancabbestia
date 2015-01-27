@@ -71,7 +71,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
     x_hat = matrix(1,nrow=numNodes,ncol=numFeatures);
     z = array(0,numFeatures);
     u = matrix(0,nrow=numNodes,ncol=numFeatures);
-
+    par(mfrow = c(2,1)) # two rows in the plot
     # loop until the MAX_TIME has been reached
     for(timer in seq(1,MAX_TIME)) {
       
@@ -131,7 +131,27 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
 #      if( abs(SVMimprovement) < abs(epsilon) ) { return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))}
 #      cat(timer,",",SVMimprovement,"LOG",colMeans(logRun[[ lunghezza ]]),"SVM",SVMResult ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
       cat(timer,",",colMeans(logRun[[ lunghezza ]]) ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
-
+      # routine for plotting the ongoing graph
+      if (timer == 5) { 
+        min.primary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T))
+        min.primary <- min.primary / 20
+        min.secondary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T))
+        min.secondary <- min.secondary / 20
+        max.primary <- max(sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T))
+        max.primary <- max.primary * 5
+        max.secondary <- max(sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T))
+        max.secondary <- max.secondary * 5
+        plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,20), xlab = "Iteration No.")
+        lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
+        plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,20), xlab = "Iteration No.")
+        lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
+      }
+      if (timer > 5) {
+        plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
+        lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
+        plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
+        lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
+      }
       if(history.r_norm[[timer]] < history.eps_pri[[timer]] & history.s_norm[[timer]] < history.eps_dual[[timer]] ) {
         return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))
       }

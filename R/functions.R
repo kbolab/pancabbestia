@@ -162,17 +162,21 @@ multiExperiment<-function(
   fromSamplesPerNode=300,
   toSamplesPerNode=300,
   
-  plotIt = TRUE,
+  plotIt = TRUE,                         # plot It  
   
-  basePath="/home/kboaria/Desktop/math", 
-  baseNameFile="listaResult.cat") {
+  basePath="/home/kboaria/Desktop/math", # folder 
+  baseNameFile="listaResult.cat",        # filename
+  buildCSV = FALSE                       # Do I have to write results on CSV??!?!
+  ) {
   
   nameFile<-paste(basePath,"/",baseNameFile,sep="");
   
   
   stringa<-"i,mediaDistCentrCentroidi,mediaSD,nodes,numFeatures,rho,lambda,alpha,samplesPerNode,accuracy,numberOfIterations,usedTime"
-  if(!file.exists(nameFile))
-    write( stringa, file = nameFile, append=TRUE)
+  if( buildCSV == TRUE ) {
+    if(!file.exists(nameFile))
+      write( stringa, file = nameFile, append=TRUE)
+  }
   
   for(i in seq( 1: 100000 )) {
     # get the values
@@ -218,14 +222,14 @@ multiExperiment<-function(
     ),collapse=',')
     
     # WRITE on Disk!!!! (appending the line....)  
-    write( stringa, file = nameFile, append=TRUE)
+    if( buildCSV == TRUE ) {
+      write( stringa, file = nameFile, append=TRUE)
+    }
   }
   
 }
 
-# multiExperiment( fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = 1,fromNodes = 2,toNodes = 10, fromSamplesPerNode = 50, toSamplesPerNode = 500, plotIt = FALSE, fromNumFeatures = 2, toNumFeatures = 10,fromLambda = 1.2, toLambda=1.8, fromAlpha = 1.2, toAlpha = 1.8, fromRho = 1.2, toRho = 1.8)
-#multiExperiment( fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = .4,fromNodes = 3,toNodes = 3, fromSamplesPerNode = 100, toSamplesPerNode = 100, plotIt = TRUE, fromNumFeatures = 2, toNumFeatures = 2,fromAlpha = 1.2, toAlpha = 1.8, fromRho = 1.2, toRho = 1.7, fromSD = .5,toSD = .9)
-#multiExperiment(  fromSD = .5,toSD = .9,fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = .5,
+#multiExperiment(  fromSD = .2,toSD = .4,fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = .5,
 #                  fromNodes = 2,toNodes = 10, fromSamplesPerNode = 50, toSamplesPerNode = 500, plotIt = TRUE, fromNumFeatures = 2, 
 #                  toNumFeatures = 2,fromLambda = 1.2, toLambda=1.8, fromAlpha = 1.2, toAlpha = 1.8, fromRho = 1.2, 
-#                  toRho = 1.8,basePath="/home/kboaria/Desktop/math",baseNameFile='listaResult_01.cat')
+#                  toRho = 1.8,buildCSV = FALSE)

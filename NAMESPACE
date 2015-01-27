@@ -3,4 +3,5 @@
 export(dLearn)
 export(dNode)
 export(multiExperiment)
+export(experiment)
 import(optimx)

@@ -56,7 +56,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
   }
   
   # run: Execute the calculus 
-  run<-function(epsilon = 0.001, MAX_TIME = 2000) {
+  run<-function(epsilon = 0.001, MAX_TIME = 2000, runningPlot = FALSE) {
     logRun<-list();
     history.r_norm<-list();
     history.s_norm<-list();
@@ -214,7 +214,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
   # plotBehaviour: Plot the behaviour of the x vector on time
   # gotFromRun = is the result of the execution of a $run method
   plotBehaviour<-function(res) {
-    browser()
+    
     numberOfCenters<-dim(res$logRun[[1]])[1]
     numberOfFeatures<-dim(res$logRun[[1]])[2]
     numberOflog<-length(res$logRun)

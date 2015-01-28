@@ -76,7 +76,8 @@ experiment<-function(
   writeToMatlab = FALSE,
   epsilon = .0001,
   plotIt = TRUE,
-  returnResult = TRUE
+  returnResult = TRUE,
+  runningPlot = TRUE
   ) {
   obj<-1
   rm(obj)
@@ -120,7 +121,7 @@ experiment<-function(
   }
   
   # and now... Run!
-  res<-obj$run(epsilon = epsilon);  
+  res<-obj$run(epsilon = epsilon, runningPlot = runningPlot);  
 
   coefficienti<-colMeans(res$x);
   performances<-calcolaPerformances(  beta = coefficienti, samples = Samples  ) 
@@ -163,6 +164,7 @@ multiExperiment<-function(
   toSamplesPerNode=300,
   
   plotIt = TRUE,                         # plot It  
+  runningPlot = TRUE,
   
   basePath="/home/kboaria/Desktop/math", # folder 
   baseNameFile="listaResult.cat",        # filename
@@ -196,7 +198,7 @@ multiExperiment<-function(
     usedTime<-system.time(a<-experiment(meanP=-1, meanN=1, devN = devN,devP = devP, nodes = nodes,
                   numFeatures = numFeatures, samplesPerNode = samplesPerNode,
                   rho = rho, lambda = lambda, alpha = alpha,
-                  plotIt = plotIt,
+                  plotIt = plotIt, runningPlot = runningPlot,
                   deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters
                   ))
     usedTime<-usedTime['elapsed']

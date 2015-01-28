@@ -132,8 +132,9 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
 #      cat(timer,",",SVMimprovement,"LOG",colMeans(logRun[[ lunghezza ]]),"SVM",SVMResult ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
       cat(timer,",",colMeans(logRun[[ lunghezza ]]) ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
       # routine for plotting the ongoing graph
-      if ( runningPlot == TRUE) {
-        if (timer == 5) { 
+
+      if ( runningPlot == TRUE ) {
+        if (timer ==5 ) {  # aggiugner && controllo plot
           min.primary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T))
           min.primary <- min.primary / 20
           min.secondary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T))
@@ -147,15 +148,24 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
         }
-        if (timer > 5) {
+        if (timer > 5) { # aggiunger && controllo plot
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
         }
       }
-
       if(history.r_norm[[timer]] < history.eps_pri[[timer]] & history.s_norm[[timer]] < history.eps_dual[[timer]] ) {
+        if( runningPlot== TRUE  ) {
+          plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
+          lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
+          points(x = timer, y = boydVAL[[timer]]$history.r_norm, pch = 13, cex = 1.5, col = "red", lwd = 2)
+          title(main = paste("Algorithm successfully converged after", timer, "iterations!"))
+          plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
+          lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
+          points(x = timer, y = boydVAL[[timer]]$history.s_norm, pch = 13, cex = 1.5, col = "blue", lwd = 2)
+          Sys.sleep(1)
+        }
         return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))
       }
 

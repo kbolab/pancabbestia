@@ -15,7 +15,8 @@ dNode<-function(p_externalName,p_externalID,algo="SVM", rho = 0, alpha = 0, lamb
   xVar<-0;
   numFeatures<-0;
   algorithm<-algo;
-  
+    
+# jiojio
   # ------------------------------------------
   # Methods
   # ------------------------------------------

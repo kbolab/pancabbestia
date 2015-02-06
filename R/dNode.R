@@ -40,14 +40,15 @@ dNode<-function(p_externalName,p_externalID,algo="SVM", rho = 0, alpha = 0, lamb
   # z because u and x could be stored in the node. This flow is done 
   # in order to simplify the code)
   takeStep<-function(xi,zi,ui) {
-    # Build Ai matrix multipling x samples for y values (last column).
+    
+# Build Ai matrix multipling x samples for y values (last column).
     Ai<-samples;
     for(i in seq(1,numFeatures -1) ) {
       Ai[,i]<-Ai[,i]*Ai[,numFeatures]
     }
     
     # calculate the minimum
-   
+    
     res2<-optimx(xi,fn=DLQPFunctionSVM,Ai=Ai,rho=rho,ui=ui,zi=zi, itnmax = 3000)
 #    print(algorithm);
     retBack<-unlist(res2[1,1:numFeatures])

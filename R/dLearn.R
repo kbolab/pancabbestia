@@ -112,6 +112,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
         boydVAL[[timer]][["got"]] <- 1
         
       }
+
       boydVAL[[timer]][["history.eps_pri"]] <- history.eps_pri[[timer]]
       boydVAL[[timer]][["history.r_norm"]] <- history.r_norm[[timer]]
       boydVAL[[timer]][["history.s_norm"]] <- history.s_norm[[timer]]
@@ -126,13 +127,13 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
         XconvRun[[timer]]<-improvement
 #        if( abs(improvement) < abs(epsilon)) { return(list("convRun"=convRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))}
       }
+
 #      SVMimprovement<-mean((colMeans(logRun[[ lunghezza ]])-SVMResult)/SVMResult)
 #      convRun[[timer]]<-SVMimprovement;
 #      if( abs(SVMimprovement) < abs(epsilon) ) { return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))}
 #      cat(timer,",",SVMimprovement,"LOG",colMeans(logRun[[ lunghezza ]]),"SVM",SVMResult ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
       cat(timer,",",colMeans(logRun[[ lunghezza ]]) ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
       # routine for plotting the ongoing graph
-
       if ( runningPlot == TRUE ) {
         if (timer ==5 ) {  # aggiugner && controllo plot
           min.primary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T))

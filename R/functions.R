@@ -141,6 +141,9 @@ experiment<-function(
 }
 
 multiExperiment<-function(
+  
+  numberOfExperiment = 10000,
+  
   fromSD = .1, 
   toSD = 1, 
   
@@ -180,7 +183,7 @@ multiExperiment<-function(
       write( stringa, file = nameFile, append=TRUE)
   }
   
-  for(i in seq( 1: 100000 )) {
+  for(i in seq( 1: numberOfExperiment )) {
     # get the values
     devN<-runif(1)*(toSD-fromSD)+fromSD
     devP<-runif(1)*(toSD-fromSD)+fromSD
@@ -231,7 +234,7 @@ multiExperiment<-function(
   
 }
 
-#multiExperiment(  fromSD = .2,toSD = .4,fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = .5,
+#multiExperiment(  numberOfExperiment=1000, fromSD = .2,toSD = .4,fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = .5,
 #                  fromNodes = 2,toNodes = 10, fromSamplesPerNode = 50, toSamplesPerNode = 500, plotIt = TRUE, fromNumFeatures = 2, 
 #                  toNumFeatures = 2,fromLambda = 1.2, toLambda=1.8, fromAlpha = 1.2, toAlpha = 1.8, fromRho = 1.2, 
 #                  toRho = 1.8,buildCSV = FALSE)

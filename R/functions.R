@@ -234,6 +234,40 @@ multiExperiment<-function(
   
 }
 
+testDataset<-function( URL = 'http://5.249.147.20:8080/sparql',  arrayOfToken = c(11,12,13) )  {
+  
+    ct<-1
+    
+    for( token in arrayOfToken) {
+    
+      d<-SPARQL(url=URL ,query=paste(c('
+        PREFIX db: <http://localhost:8080/resource/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX map: <http://localhost:8080/resource/#>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX vocab: <http://localhost:8080/resource/vocab/>
+          select ?Query ?URL ?isValid
+                where {
+                  ?x  <http://localhost:8080/resource/vocab/dataSourceDetails_SPARQLQuery> ?Query.
+                  ?x  <http://localhost:8080/resource/vocab/dataSourceDetails_URL> ?URL.
+                  ?x  <http://localhost:8080/resource/vocab/dataSourceDetails_isValid> 1.
+                  ?x  <http://localhost:8080/resource/vocab/dataSourceDetails_id_dataSourceDetails> 
+                ',token,' }'),collapse=''))
+      
+      # Retrieve data
+      dataSource<-SPARQL(url = d$results$URL,query = d$results$Query);
+      # format it as a matrix
+      A[[ct]]<-as.matrix(dataSource$res);
+      ct<-ct+1
+    }
+  
+
+  
+}
+
+
 #multiExperiment(  numberOfExperiment=1000, fromSD = .2,toSD = .4,fromDeltaSDAmongCentroidsAmongCenters = 0,toDeltaSDAmongCentroidsAmongCenters = .5,
 #                  fromNodes = 2,toNodes = 10, fromSamplesPerNode = 50, toSamplesPerNode = 500, plotIt = TRUE, fromNumFeatures = 2, 
 #                  toNumFeatures = 2,fromLambda = 1.2, toLambda=1.8, fromAlpha = 1.2, toAlpha = 1.8, fromRho = 1.2, 

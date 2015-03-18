@@ -2,7 +2,7 @@
 # ------------------------------------------
 # Class dLearn
 # ------------------------------------------
-dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
+dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="screen",basePath = basePath){
   
   # ------------------------------------------
   # Attributes
@@ -20,6 +20,11 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
   alpha<-alpha;
   rho<-rho;
   numFeatures<-0;
+  image01<-"";
+  image02<-"";
+  image03<-"";
+  image04<-"";
+  
   
   # ------------------------------------------
   # Methods
@@ -136,6 +141,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
       # routine for plotting the ongoing graph
       if ( runningPlot == TRUE ) {
         if (timer ==5 ) {  # aggiugner && controllo plot
+          
           min.primary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T))
           min.primary <- min.primary / 20
           min.secondary <- min(sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T))
@@ -144,27 +150,39 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
           max.primary <- max.primary * 5
           max.secondary <- max(sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T))
           max.secondary <- max.secondary * 5
+          if( writeTo == "file") png( image01 )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
+          if( writeTo == "file") dev.off()
+          if( writeTo == "file") png( image02 )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
+          if( writeTo == "file") dev.off()
         }
         if (timer > 5) { # aggiunger && controllo plot
+          if( writeTo == "file") png( image01) 
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
+          if( writeTo == "file") dev.off()
+          if( writeTo == "file") png( image02 )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
+          if( writeTo == "file") dev.off()
         }
       }
       if(history.r_norm[[timer]] < history.eps_pri[[timer]] & history.s_norm[[timer]] < history.eps_dual[[timer]] ) {
         if( runningPlot== TRUE  ) {
+          if( writeTo == "file") png( image01 )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primary conv", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
           points(x = timer, y = boydVAL[[timer]]$history.r_norm, pch = 13, cex = 1.5, col = "red", lwd = 2)
           title(main = paste("Algorithm successfully converged after", timer, "iterations!"))
+          if( writeTo == "file") dev.off()
+          if( writeTo == "file") png( image02 )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Secondary conv", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
           points(x = timer, y = boydVAL[[timer]]$history.s_norm, pch = 13, cex = 1.5, col = "blue", lwd = 2)
+          if( writeTo == "file") dev.off()
           Sys.sleep(1)
         }
         return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))
@@ -256,6 +274,8 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
     
     DFO<-matrix(0,ncol=numberOflog,nrow=numberOfCenters)
     
+    if( writeTo == "file")  png( image03 ) 
+    
     for(logNum in seq(1,numberOflog)) {
       for(centNum in seq(1,numberOfCenters)) {
         DFO[centNum,logNum]<-sqrt(res$logRun[[logNum]][centNum,]%*%res$logRun[[logNum]][centNum,])
@@ -266,6 +286,9 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
       points(seq(1,dim(DFO)[2]),DFO[i,],type='l',lty='dotted')
     }
     points(seq(1,dim(DFO)[2]),colMeans(DFO),type='l',col="Red")
+    
+    if( writeTo == "file") dev.off()
+    
     print(c(c(0,dim(DFO)[2]),c(min(DFO),max(DFO)  )))
     return(DFO)
   }
@@ -283,7 +306,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
     minVal<-min(unlist(samplePointsList))
     maxVal<-max(unlist(samplePointsList))
 
-
+    if( writeTo == "file")  png( image04 ) 
     plot(mean(c(minVal,maxVal)),mean(c(minVal,maxVal)),ylim=c(minVal,maxVal),xlim=c(minVal,maxVal),col="Black",pch=3)  
     for(i in seq(1,length(samplePointsList))) {
       for(riga in seq(1,dim(samplePointsList[[i]])[1] )) {
@@ -313,6 +336,8 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
     vector<-colMeans(res)
     y=-xPoints*(vector[1]/vector[2])-vector[3]/vector[2]
     points(xPoints,y,type='l',col='Black')   
+    
+    if( writeTo == "file") dev.off()
 
   }  
   
@@ -344,6 +369,15 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0){
     ABSTOL<<-1e-4;
     RELTOL<<-1e-2;
     numFeatures<<-0;
+    writeTo<<-writeTo
+    if(token==0)
+      {token<<-paste(c(format(Sys.time(),"%Y%m%d"),as.character(runif(1)*10^8),as.character(runif(1)*10^8)),collapse="_"); }
+    basePath<<-basePath    
+    image01<<-paste(c(basePath,"/","img01_",token,".png"),collapse='')
+    image02<<-paste(c(basePath,"/","img02_",token,".png"),collapse='')
+    image03<<-paste(c(basePath,"/","img03_",token,".png"),collapse='')
+    image04<<-paste(c(basePath,"/","img04_",token,".png"),collapse='')
+    
   }
   # invokes functions/methods that must be executed when
   # the object is instantiated   

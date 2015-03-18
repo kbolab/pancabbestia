@@ -77,11 +77,14 @@ experiment<-function(
   epsilon = .0001,
   plotIt = TRUE,
   returnResult = TRUE,
-  runningPlot = TRUE
+  runningPlot = TRUE,
+  token = 0, 
+  basePath = "./outPath",
+  writeTo = "screen"
   ) {
   obj<-1
   rm(obj)
-  obj<-dLearn( lambda = lambda, rho = rho, alpha = alpha );
+  obj<-dLearn( lambda = lambda, rho = rho, alpha = alpha, token = token,writeTo = writeTo,basePath = basePath );
 
   # create a sample set, just for testing
   uTMP<-list()  
@@ -146,7 +149,7 @@ multiExperiment<-function(
   
   fromSD = .1, 
   toSD = 1, 
-  
+    
   fromDeltaSDAmongCentroidsAmongCenters = 0,
   toDeltaSDAmongCentroidsAmongCenters  = 0,
 
@@ -169,9 +172,12 @@ multiExperiment<-function(
   plotIt = TRUE,                         # plot It  
   runningPlot = TRUE,
   
-  basePath="/home/kboaria/Desktop/math", # folder 
+  #basePath="/home/kboaria/Desktop/math", # folder 
+  basePath="./outPath", # folder 
   baseNameFile="listaResult.cat",        # filename
-  buildCSV = FALSE                       # Do I have to write results on CSV??!?!
+  buildCSV = FALSE,                       # Do I have to write results on CSV??!?!
+  token = 0,                             # token about ID png file name
+  writeTo = "screen"
   ) {
   
   nameFile<-paste(basePath,"/",baseNameFile,sep="");
@@ -202,7 +208,8 @@ multiExperiment<-function(
                   numFeatures = numFeatures, samplesPerNode = samplesPerNode,
                   rho = rho, lambda = lambda, alpha = alpha,
                   plotIt = plotIt, runningPlot = runningPlot,
-                  deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters
+                  deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters,
+                  token = token, writeTo = writeTo, basePath = basePath
                   ))
     usedTime<-usedTime['elapsed']
     # Compose the results
@@ -235,11 +242,8 @@ multiExperiment<-function(
 }
 
 testDataset<-function( URL = 'http://5.249.147.20:8080/sparql',  arrayOfToken = c(11,12,13) )  {
-  
     ct<-1
-    
     for( token in arrayOfToken) {
-    
       d<-SPARQL(url=URL ,query=paste(c('
         PREFIX db: <http://localhost:8080/resource/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -255,16 +259,12 @@ testDataset<-function( URL = 'http://5.249.147.20:8080/sparql',  arrayOfToken = 
                   ?x  <http://localhost:8080/resource/vocab/dataSourceDetails_isValid> 1.
                   ?x  <http://localhost:8080/resource/vocab/dataSourceDetails_id_dataSourceDetails> 
                 ',token,' }'),collapse=''))
-      
       # Retrieve data
       dataSource<-SPARQL(url = d$results$URL,query = d$results$Query);
       # format it as a matrix
       A[[ct]]<-as.matrix(dataSource$res);
       ct<-ct+1
     }
-  
-
-  
 }
 
 

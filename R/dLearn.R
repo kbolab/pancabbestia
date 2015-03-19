@@ -150,21 +150,21 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
           max.primary <- max.primary * 5
           max.secondary <- max(sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T))
           max.secondary <- max.secondary * 5
-          if( writeTo == "file") png( adjustImgFileName( image01,timer ) )
+          if( writeTo == "file") png( adjustImgFileName( image01,timer ), width = imgWidth , height = imgHeight )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primal convergence", ylim = c(min.primary, max.primary), xlim=c(0,20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
           if( writeTo == "file") dev.off()
-          if( writeTo == "file") png( adjustImgFileName(image02,timer) )
+          if( writeTo == "file") png( adjustImgFileName(image02,timer), width = imgWidth , height = imgHeight  )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Dual convergence", ylim = c(min.secondary, max.secondary), xlim=c(0,20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
           if( writeTo == "file") dev.off()
         }
         if (timer > 5) { # aggiunger && controllo plot
-          if( writeTo == "file") png( adjustImgFileName(image01,timer) ) 
+          if( writeTo == "file") png( adjustImgFileName(image01,timer), width = imgWidth , height = imgHeight  ) 
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primal convergence", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
           if( writeTo == "file") dev.off()
-          if( writeTo == "file") png( adjustImgFileName(image02,timer) )
+          if( writeTo == "file") png( adjustImgFileName(image02,timer) , width = imgWidth , height = imgHeight )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Dual convergence", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
           if( writeTo == "file") dev.off()
@@ -172,13 +172,13 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
       }
       if(history.r_norm[[timer]] < history.eps_pri[[timer]] & history.s_norm[[timer]] < history.eps_dual[[timer]] ) {
         if( runningPlot== TRUE  ) {
-          if( writeTo == "file") png( adjustImgFileName(image01,timer) )
+          if( writeTo == "file") png( adjustImgFileName(image01,timer) , width = imgWidth , height = imgHeight )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.r_norm), simplify = T), type = "l", col="red", lwd = 2, log="y", ylab = "Primal convergence", ylim = c(min.primary, max.primary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_pri), simplify = T), lty = 4, col="red", lwd = 2)
           points(x = timer, y = boydVAL[[timer]]$history.r_norm, pch = 13, cex = 1.5, col = "red", lwd = 2)
           if( writeTo != "file")  title(main = paste("Algorithm successfully converged after", timer, "iterations!"))
           if( writeTo == "file") dev.off()
-          if( writeTo == "file") png( adjustImgFileName(image02,timer) )
+          if( writeTo == "file") png( adjustImgFileName(image02,timer) , width = imgWidth , height = imgHeight )
           plot(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.s_norm), simplify = T), type = "l", col="blue", lwd = 2, log="y", ylab = "Dual convergence", ylim = c(min.secondary, max.secondary), xlim=c(0,ceiling(timer/20)*20), xlab = "Iteration No.")
           lines(x = c(1:timer), y = sapply(X = boydVAL, FUN = function(x) return(x$history.eps_dual), simplify = T), lty = 4, col="blue", lwd = 2)
           points(x = timer, y = boydVAL[[timer]]$history.s_norm, pch = 13, cex = 1.5, col = "blue", lwd = 2)

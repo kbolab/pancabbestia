@@ -86,11 +86,11 @@ experiment<-function(
   ) {
   obj<-1
   rm(obj)
-  obj<-dLearn( lambda = lambda, rho = rho, alpha = alpha, token = token,writeTo = writeTo,basePath = basePath );
+  obj<-dLearn( lambda = lambda, rho = rho, alpha = alpha, token = token,writeTo = writeTo,basePath = basePath, imgWidth = imgWidth, imgHeight = imgHeight );
 
   # create a sample set, just for testing
   uTMP<-list()  
-  uTMP<-obj$createPopulation(imgWidth = imgWidth, imgHeight = imgHeight, samplesPerNode,numFeatures,nodes,meanP = meanP,devP = devP, meanN=meanN, devN=devN, deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters );
+  uTMP<-obj$createPopulation( samplesPerNode,numFeatures,nodes,meanP = meanP,devP = devP, meanN=meanN, devN=devN, deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters );
   Samples<<-uTMP$Ai
   mediaSD<-uTMP$mediaSD
 

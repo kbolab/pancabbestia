@@ -277,7 +277,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     
     DFO<-matrix(0,ncol=numberOflog,nrow=numberOfCenters)
     
-    if( writeTo == "file")  png( image03 ) 
+    if( writeTo == "file")  png( image03, width = imgWidth , height = imgHeight  ) 
     
     for(logNum in seq(1,numberOflog)) {
       for(centNum in seq(1,numberOfCenters)) {
@@ -309,7 +309,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     minVal<-min(unlist(samplePointsList))
     maxVal<-max(unlist(samplePointsList))
 
-    if( writeTo == "file")  png( image04 ) 
+    if( writeTo == "file")  png( image04 , width = imgWidth , height = imgHeight ) 
     plot(mean(c(minVal,maxVal)),mean(c(minVal,maxVal)),ylim=c(minVal,maxVal),xlim=c(minVal,maxVal),col="Black",pch=3)  
     for(i in seq(1,length(samplePointsList))) {
       for(riga in seq(1,dim(samplePointsList[[i]])[1] )) {

@@ -2,7 +2,7 @@
 # ------------------------------------------
 # Class dLearn
 # ------------------------------------------
-dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="screen",basePath = basePath){
+dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="screen",basePath = basePath, imgWidth = 320,  imgHeight = 320){
   
   # ------------------------------------------
   # Attributes
@@ -380,7 +380,8 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     image02<<-paste(c(basePath,"/","img02_",token,".png"),collapse='')
     image03<<-paste(c(basePath,"/","img03_",token,".png"),collapse='')
     image04<<-paste(c(basePath,"/","img04_",token,".png"),collapse='')
-    
+    imgWidth<<-imgWidth
+    imgHeight<<-imgWidth
   }
   # invokes functions/methods that must be executed when
   # the object is instantiated   

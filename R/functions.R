@@ -80,6 +80,8 @@ experiment<-function(
   runningPlot = TRUE,
   token = 0, 
   basePath = "./outPath",
+  imgWidth = 320,
+  imgHeight = 320,
   writeTo = "screen"
   ) {
   obj<-1
@@ -88,7 +90,7 @@ experiment<-function(
 
   # create a sample set, just for testing
   uTMP<-list()  
-  uTMP<-obj$createPopulation(samplesPerNode,numFeatures,nodes,meanP = meanP,devP = devP, meanN=meanN, devN=devN, deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters );
+  uTMP<-obj$createPopulation(imgWidth = imgWidth, imgHeight = imgHeight, samplesPerNode,numFeatures,nodes,meanP = meanP,devP = devP, meanN=meanN, devN=devN, deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters );
   Samples<<-uTMP$Ai
   mediaSD<-uTMP$mediaSD
 
@@ -177,6 +179,8 @@ multiExperiment<-function(
   baseNameFile="listaResult.cat",        # filename
   buildCSV = FALSE,                       # Do I have to write results on CSV??!?!
   token = 0,                             # token about ID png file name
+  imgWidth = 320,
+  imgHeight = 320,
   writeTo = "screen"
   ) {
   
@@ -209,7 +213,7 @@ multiExperiment<-function(
                   rho = rho, lambda = lambda, alpha = alpha,
                   plotIt = plotIt, runningPlot = runningPlot,
                   deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters,
-                  token = token, writeTo = writeTo, basePath = basePath
+                  token = token, writeTo = writeTo, basePath = basePath, imgWidth = imgWidth, imgHeight = imgHeight
                   ))
     usedTime<-usedTime['elapsed']
     # Compose the results

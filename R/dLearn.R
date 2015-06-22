@@ -1,8 +1,7 @@
-
 # ------------------------------------------
 # Class dLearn
 # ------------------------------------------
-dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="screen",basePath = basePath, imgWidth = 320,  imgHeight = 320){
+dLearn<-function(lambda=0,rho=0,alpha=0,token = 0, writeTo="screen",basePath = "./outPath", imgWidth = 320,  imgHeight = 320){
   
   # ------------------------------------------
   # Attributes
@@ -38,7 +37,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
   
   # addNode: add a new node
   addNode<-function(nodeName) {
-    nodes[[length(nodes)+1]]<<-dNode(p_externalName = nodeName,p_externalID = length(nodes)+1, alpha = alpha, rho = rho, lambda = lambda);	
+    nodes[[length(nodes)+1]]<<-dNode(p_externalName = nodeName,p_externalID = length(nodes)+1, alpha = alpha, rho = rho, lambda = lambda);  
     numNodes<<-length(nodes);
     return(length(nodes));
   }
@@ -85,7 +84,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
       for(i in seq(1,numNodes)) {
         x[i,]<-nodes[[i]]$takeStep(x[i,],z,u[i,]);	
       }
-
+      
       # now calcolate z and u at next step
       i<-1;
       for(i in seq(1,numNodes)) {
@@ -93,10 +92,10 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
       }  
       zold<-z;
       z<-(( numNodes*rho ) / ( (1/lambda)+numNodes*rho ))*colMeans(x_hat+u) 
-
+      
       zMatrice<- matrix(rep(z,numNodes),nrow=dim(x_hat)[1],byrow=TRUE)
       u<-u+ (x_hat - zMatrice);
-
+      
       # now build some logs and the variables used to check the 
       # stop condition
       logRun[[timer]]<-x;
@@ -104,40 +103,31 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
       history.s_norm[[timer]]<-mtlbNorm(-rho*(matrix(rep(z,numNodes),nrow=dim(x_hat)[1],byrow=TRUE) - matrix(rep(zold,numNodes),nrow=dim(x_hat)[1],byrow=TRUE)));
       history.eps_pri[[timer]]<-sqrt(dim(x)[2])*ABSTOL + RELTOL*max(mtlbNorm(x), mtlbNorm(-matrix(rep(z,numNodes),nrow=dim(x_hat)[1],byrow=TRUE)));
       history.eps_dual[[timer]]<-sqrt(dim(x)[2])*ABSTOL + RELTOL*mtlbNorm(rho*u);     
-
+      
       # is the stop condition reached?
       # if so, bye!
-#      cat(".")
       boydVAL[[timer]]<-list();
       boydVAL[[timer]][["got"]] <- 0
       if(history.r_norm[[timer]] < history.eps_pri[[timer]] & history.s_norm[[timer]] < history.eps_dual[[timer]] ) {
-#        stopConditionAt[["timer"]]<-timer;
-#        stopConditionAt[["x"]]<-x;        
-#        return(list("x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))
-        boydVAL[[timer]][["got"]] <- 1
-        
+        boydVAL[[timer]][["got"]] <- 1        
       }
-
+      
       boydVAL[[timer]][["history.eps_pri"]] <- history.eps_pri[[timer]]
       boydVAL[[timer]][["history.r_norm"]] <- history.r_norm[[timer]]
       boydVAL[[timer]][["history.s_norm"]] <- history.s_norm[[timer]]
       boydVAL[[timer]][["history.eps_dual"]] <- history.eps_dual[[timer]]
-
+      
       if ( boydVAL[[timer]][["got"]] == 1 ) boydVAL[[timer]][["got"]] = 1
       # increase the timer
-
+      
       lunghezza<-length(logRun)
       if(lunghezza>2) {
         improvement<-mean(colMeans((logRun[[  lunghezza ]]-logRun[[  lunghezza-1 ]])/logRun[[  lunghezza ]]))
         XconvRun[[timer]]<-improvement
-#        if( abs(improvement) < abs(epsilon)) { return(list("convRun"=convRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))}
       }
-
-#      SVMimprovement<-mean((colMeans(logRun[[ lunghezza ]])-SVMResult)/SVMResult)
-#      convRun[[timer]]<-SVMimprovement;
-#      if( abs(SVMimprovement) < abs(epsilon) ) { return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))}
-#      cat(timer,",",SVMimprovement,"LOG",colMeans(logRun[[ lunghezza ]]),"SVM",SVMResult ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
+      
       cat(timer,",",colMeans(logRun[[ lunghezza ]]) ,"BoydCONV",boydVAL[[timer]]$got,",",boydVAL[[timer]]$history.r_norm,",",boydVAL[[timer]]$history.eps_pri,",",boydVAL[[timer]]$history.s_norm,",",boydVAL[[timer]]$history.eps_dual,"\n")
+      
       # routine for plotting the ongoing graph
       if ( runningPlot == TRUE ) {
         if (timer ==5 ) {  # aggiugner && controllo plot
@@ -187,7 +177,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
         }
         return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))
       }
-
+      
       timer<-timer+1;
     }
     
@@ -197,32 +187,27 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     return(list("XconvRun"=XconvRun,"x"=x,"logRun"=logRun,"history.eps_dual"=unlist(history.eps_dual),"history.eps_pri"=unlist(history.eps_pri),"history.s_norm"=unlist(history.s_norm),"history.r_norm"=unlist(history.r_norm),"stopConditionAt"=stopConditionAt))    
   }
   adjustImgFileName<-function(imageFileName,timer) {
-        a<-str_replace( imageFileName , ".png", paste(c("_",timer,"_.png"),collapse='') );
-        return(a)
+    a<-str_replace( imageFileName , ".png", paste(c("_",timer,"_.png"),collapse='') );
+    return(a)
   }
   # createPopulation: Create a pupulation
   # quantiXCentro = number of numSamples cases for each node
   # numFeatures = number of features
   # numCentri = number of nodes
   createPopulation<-function(quantiXCentro,numFeatures,numCentri,meanP = 3,devP = 1.5, meanN=-3, devN=1.5, deltaSDAmongCentroidsAmongCenters = 0) {
-#    meanP<-3      # mean of positives
-#    devP<-2     # st.dev of positives   (1.5)
-#    meanN<--3     # mean of negatives 
-#    devN<-2      # st.dev of negatives (1)
-    
     Ai<-list()
     arrSD<-c()
     for(i in seq(1:numCentri)) {
       
       uTMP<-list()
       uTMP<-createSubset(
-          numSamples = quantiXCentro,
-          numFeatures = numFeatures,
-          meanP = meanP,
-          devP = devP,
-          meanN = meanN,
-          devN = devN,
-          deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters)
+        numSamples = quantiXCentro,
+        numFeatures = numFeatures,
+        meanP = meanP,
+        devP = devP,
+        meanN = meanN,
+        devN = devN,
+        deltaSDAmongCentroidsAmongCenters = deltaSDAmongCentroidsAmongCenters)
       Ai[[i]]<-uTMP$A;      
       arrSD<-c(arrSD,uTMP$sdData)
     }
@@ -243,7 +228,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     
     # Positive Samples
     PPoints<-c()
-
+    
     for( i in seq(1:numFeatures)) {
       sbilanciamentoMediaP <- c(sbilanciamentoMediaP,abs(rnorm( n = 1, mean = 0, sd = deltaSDAmongCentroidsAmongCenters)))
       PPoints<-c( PPoints, rnorm( numSamples, mean = meanP + abs(rnorm( n = 1, mean = 0, sd = deltaSDAmongCentroidsAmongCenters)) , sd = devP )  )
@@ -262,7 +247,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     
     sbilanciamentoMediaP<-mean(sbilanciamentoMediaP)
     sbilanciamentoMediaN<-mean(sbilanciamentoMediaN)
-
+    
     return( list("A"=A, "sdData"=c(sbilanciamentoMediaP,sbilanciamentoMediaN) ) )
   }
   
@@ -308,29 +293,29 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     logRun<-gotFromRun$logRun
     minVal<-min(unlist(samplePointsList))
     maxVal<-max(unlist(samplePointsList))
-
+    
     if( writeTo == "file")  png( image04 , width = imgWidth , height = imgHeight ) 
     plot(mean(c(minVal,maxVal)),mean(c(minVal,maxVal)),ylim=c(minVal,maxVal),xlim=c(minVal,maxVal),col="Black",pch=3)  
     for(i in seq(1,length(samplePointsList))) {
       for(riga in seq(1,dim(samplePointsList[[i]])[1] )) {
-
+        
         if( samplePointsList[[i]][riga,3] == 1 ) {
           if( performances$sampleClassification[[i]][riga] ==1 )
-            {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Red', pch = 1)}
+          {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Red', pch = 1)}
           else
-            {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Red', pch=16); }
+          {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Red', pch=16); }
         }
         else {
           if( performances$sampleClassification[[i]][riga] ==1 )
-            {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Blue', pch = 1)}
+          {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Blue', pch = 1)}
           else
-            {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Blue', pch=16);}
+          {points(samplePointsList[[i]][riga,1],samplePointsList[[i]][riga,2],col='Blue', pch=16);}
         }
       }
     }
     
     xPoints<-c(minVal,maxVal)
-
+    
     for(i in seq(1,length(logRun))) {
       vector<-colMeans(logRun[[i]])
       y=-xPoints*(vector[1]/vector[2])-vector[3]/vector[2]
@@ -341,7 +326,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     points(xPoints,y,type='l',col='Black')   
     
     if( writeTo == "file") dev.off()
-
+    
   }  
   
   # plotAll: Plot the two diagrams
@@ -353,7 +338,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     }  else {par(mfrow=c(1,1))}
     
     
-#    plotPoints(Samples,res)
+    #    plotPoints(Samples,res)
     plotBehaviour(res)
   }
   
@@ -374,7 +359,7 @@ dLearn<-function(incomingPathName,lambda=0,rho=0,alpha=0,token = 0, writeTo="scr
     numFeatures<<-0;
     writeTo<<-writeTo
     if(token==0)
-      {token<<-paste(c(format(Sys.time(),"%Y%m%d"),as.character(runif(1)*10^8),as.character(runif(1)*10^8)),collapse="_"); }
+    {token<<-paste(c(format(Sys.time(),"%Y%m%d"),as.character(runif(1)*10^8),as.character(runif(1)*10^8)),collapse="_"); }
     basePath<<-basePath    
     image01<<-paste(c(basePath,"/","img01_",token,".png"),collapse='')
     image02<<-paste(c(basePath,"/","img02_",token,".png"),collapse='')

@@ -60,6 +60,14 @@ calcolaPerformances<-function(beta , samples   ) {
 
   return(list( "TP"=TP, "TN"=TN, "FP"=FP, "FN"=FN,"sampleClassification"=sampleClassification   ) )
 }
+plotFinalPicture<-function(obj, Samples, res) {
+  Samples<-Samples$Ai
+  coefficienti<-colMeans(res$x);
+  performances<-calcolaPerformances(  beta = coefficienti, samples = Samples  ) 
+  accuracy<-(performances$TP+performances$TN)/(performances$TP+performances$TN+performances$FP+performances$FN);
+  
+  obj$plotAll(Samples,res,performances=performances);
+}
 experiment<-function(
   meanP = 3,  
   meanN =-3,   
